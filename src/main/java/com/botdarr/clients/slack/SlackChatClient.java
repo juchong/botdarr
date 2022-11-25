@@ -1,5 +1,17 @@
 package com.botdarr.clients.slack;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
+
 import com.botdarr.Config;
 import com.botdarr.clients.ChatClient;
 import com.github.seratch.jslack.Slack;
@@ -20,13 +32,6 @@ import com.github.seratch.jslack.api.rtm.RTMClient;
 import com.github.seratch.jslack.api.rtm.RTMMessageHandler;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.util.Strings;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SlackChatClient implements ChatClient<SlackResponse> {
   public SlackChatClient(RTMClient rtmClient) {

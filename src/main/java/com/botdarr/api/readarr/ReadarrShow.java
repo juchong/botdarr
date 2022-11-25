@@ -1,11 +1,11 @@
-package com.botdarr.api.sonarr;
+package com.botdarr.api.readarr;
 
 import com.botdarr.api.KeyBased;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.List;
 
-public class SonarrShow implements KeyBased<Long> {
+public class ReadarrShow implements KeyBased<Long> {
   @Override
   public Long getKey() {
     return tvdbId;
@@ -63,11 +63,11 @@ public class SonarrShow implements KeyBased<Long> {
     this.airTime = airTime;
   }
 
-  public List<SonarrImage> getImages() {
+  public List<Readarrmage> getImages() {
     return images;
   }
 
-  public void setImages(List<SonarrImage> images) {
+  public void setImages(List<Readarrmage> images) {
     this.images = images;
   }
 
@@ -77,7 +77,7 @@ public class SonarrShow implements KeyBased<Long> {
 
   public String getRemoteImage() {
     if (Strings.isEmpty(remotePoster)) {
-      for(SonarrImage sonarrImage : images) {
+      for(Readarrmage sonarrImage : images) {
         if (sonarrImage.getCoverType().equals("poster") && !Strings.isEmpty(sonarrImage.getRemoteUrl())) {
           return sonarrImage.getRemoteUrl();
         }
@@ -90,11 +90,11 @@ public class SonarrShow implements KeyBased<Long> {
     this.remotePoster = remotePoster;
   }
 
-  public List<SonarrSeason> getSeasons() {
+  public List<ReadarrSeason> getSeasons() {
     return seasons;
   }
 
-  public void setSeasons(List<SonarrSeason> seasons) {
+  public void setSeasons(List<ReadarrSeason> seasons) {
     this.seasons = seasons;
   }
 
@@ -231,9 +231,9 @@ public class SonarrShow implements KeyBased<Long> {
   private String overview;
   private String network;
   private String airTime;
-  private List<SonarrImage> images;
+  private List<Readarrmage> images;
   private String remotePoster;
-  private List<SonarrSeason> seasons;
+  private List<ReadarrSeason> seasons;
   private int year;
   private int profileId;
   private boolean seasonFolder;
@@ -247,5 +247,5 @@ public class SonarrShow implements KeyBased<Long> {
   private String seriesType;
   private String path;
   private String titleSlug;
-  private SonarrOptions addOptions = new SonarrOptions();
+  private ReadarrOptions addOptions = new ReadarrOptions();
 }

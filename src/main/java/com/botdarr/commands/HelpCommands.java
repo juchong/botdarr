@@ -9,6 +9,7 @@ import java.util.List;
 public class HelpCommands {
   public static List<Command> getCommands(List<Command> radarrCommands,
                                           List<Command> sonarrCommands,
+                                          List<Command> readarrCommands,
                                           List<Command> lidarrCommands) {
     return new ArrayList<Command>() {{
       add(new BaseHelpCommand("help", "Shows all the help commands") {
@@ -27,6 +28,12 @@ public class HelpCommands {
         @Override
         public List<CommandResponse> execute(String command) {
           return Collections.singletonList(new ShowsHelpResponse(sonarrCommands));
+        }
+      });
+      add(new BaseHelpCommand("shows help", "Shows all the book commands") {
+        @Override
+        public List<CommandResponse> execute(String command) {
+          return Collections.singletonList(new ShowsHelpResponse(readarrCommands));
         }
       });
       add(new BaseHelpCommand("music help", "Shows all the music commands") {

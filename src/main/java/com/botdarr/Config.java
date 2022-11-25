@@ -1,26 +1,27 @@
 package com.botdarr;
 
-import com.botdarr.clients.ChatClientBootstrap;
-import com.botdarr.clients.discord.DiscordBootstrap;
-import com.botdarr.clients.matrix.MatrixBootstrap;
-import com.botdarr.clients.slack.SlackBootstrap;
-import com.botdarr.clients.telegram.TelegramBootstrap;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.util.Strings;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
-import java.util.function.BiConsumer;
-
-import static com.botdarr.commands.StatusCommand.*;
+import com.botdarr.clients.ChatClientBootstrap;
+import com.botdarr.clients.discord.DiscordBootstrap;
+import com.botdarr.clients.matrix.MatrixBootstrap;
+import com.botdarr.clients.slack.SlackBootstrap;
+import com.botdarr.clients.telegram.TelegramBootstrap;
+import com.botdarr.commands.StatusCommand.StatusEndPoint;
 
 public class Config {
   private static volatile Config instance;
@@ -87,6 +88,16 @@ public class Config {
         LOGGER.warn("Sonarr commands are not enabled, make sure you set the sonarr url, path, token, default profile");
       }
 
+      this.isReadarrEnabled =
+      !Strings.isBlank(properties.getProperty(Constants.READARR_URL)) &&
+      !Strings.isBlank(properties.getProperty(Constants.READARR_PATH)) &&
+      !Strings.isBlank(properties.getProperty(Constants.READARR_TOKEN)) &&
+      !Strings.isBlank(properties.getProperty(Constants.READARR_DEFAULT_PROFILE));
+
+    if (!this.isReadarrEnabled) {
+      LOGGER.warn("Readarr commands are not enabled, make sure you set the readarr url, path, token, default profile");
+    }
+
       this.isLidarrEnabled =
         !Strings.isBlank(properties.getProperty(Constants.LIDARR_URL)) &&
         !Strings.isBlank(properties.getProperty(Constants.LIDARR_PATH)) &&
@@ -118,6 +129,10 @@ public class Config {
 
   public static boolean isSonarrEnabled() {
     return getConfig().isSonarrEnabled;
+  }
+
+  public static boolean isReadarrEnabled() {
+    return getConfig().isReadarrEnabled;
   }
 
   public static boolean isLidarrEnabled() {
@@ -159,6 +174,12 @@ public class Config {
     }
     if (isSonarrEnabled()) {
       endpoint = getDomain(Constants.SONARR_URL, "sonarr");
+      if (endpoint != null) {
+        statusEndPoints.add(endpoint);
+      }
+    }
+    if (isReadarrEnabled()) {
+      endpoint = getDomain(Constants.READARR_URL, "readarr");
       if (endpoint != null) {
         statusEndPoints.add(endpoint);
       }
@@ -327,6 +348,33 @@ public class Config {
      */
     public static final String SONARR_URL_BASE = "sonarr-url-base";
 
+   /** 
+    * The url to your readarr instance
+    * (i.e., http://SOME_IP:PORT)
+    */
+   public static final String READARR_URL = "readarr-url";
+
+   /**
+    * The api token for readarr
+    */
+   public static final String READARR_TOKEN = "readarr-token";
+
+   /**
+    * The root file path to where you want readarr to download your books
+    */
+   public static final String READARR_PATH = "readarr-path";
+
+   /**
+    * The default quality profile you want readarr to use when adding books
+    */
+   public static final String READARR_DEFAULT_PROFILE = "readarr-default-profile";
+
+   /**
+    * The url base for readarr
+    */
+   public static final String READARR_URL_BASE = "readarr-url-base";
+
+
     /**
      * The url to your lidarr instance
      */
@@ -422,6 +470,7 @@ public class Config {
   private final Properties properties;
   private final boolean isRaddarrEnabled;
   private final boolean isSonarrEnabled;
+  private final boolean isReadarrEnabled;
   private final boolean isLidarrEnabled;
   private ChatClientBootstrap chatClientBootstrap = null;
   private static final Logger LOGGER = LogManager.getLogger();

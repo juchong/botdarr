@@ -1,3 +1,4 @@
+//TODO
 package com.botdarr.clients;
 
 import com.botdarr.api.*;
@@ -6,6 +7,8 @@ import com.botdarr.api.lidarr.LidarrApi;
 import com.botdarr.api.lidarr.LidarrCommands;
 import com.botdarr.api.radarr.RadarrApi;
 import com.botdarr.api.radarr.RadarrCommands;
+import com.botdarr.api.readarr.ReadarrApi;
+import com.botdarr.api.readarr.ReadarrCommands;
 import com.botdarr.api.sonarr.SonarrApi;
 import com.botdarr.api.sonarr.SonarrCommands;
 import com.botdarr.commands.*;
@@ -28,10 +31,12 @@ public abstract class ChatClientBootstrap {
   protected <T extends ChatClientResponse> ApisAndCommandConfig buildConfig() {
     RadarrApi radarrApi = new RadarrApi();
     SonarrApi sonarrApi = new SonarrApi();
+    ReadarrApi readarrApi = new ReadarrApi();
     LidarrApi lidarrApi = new LidarrApi();
 
     List<Command> radarrCommands = RadarrCommands.getCommands(radarrApi);
     List<Command> sonarrCommands = SonarrCommands.getCommands(sonarrApi);
+    List<Command> readarrCommands = ReadarrCommands.getCommands(readarrApi);
     List<Command> lidarrCommands = LidarrCommands.getCommands(lidarrApi);
 
     List<Command> commands = new ArrayList<>();
@@ -44,6 +49,10 @@ public abstract class ChatClientBootstrap {
       commands.addAll(sonarrCommands);
       apis.add(sonarrApi);
     }
+    if (Config.isReadarrEnabled()) {
+      commands.addAll(readarrCommands);
+      apis.add(readarrApi);
+    }
     if (Config.isLidarrEnabled()) {
       commands.addAll(lidarrCommands);
       apis.add(lidarrApi);
@@ -51,7 +60,7 @@ public abstract class ChatClientBootstrap {
     if (!Config.getStatusEndpoints().isEmpty()) {
       commands.add(new StatusCommand());
     }
-    commands.addAll(HelpCommands.getCommands(radarrCommands, sonarrCommands, lidarrCommands));
+    commands.addAll(HelpCommands.getCommands(radarrCommands, sonarrCommands, readarrCommands, lidarrCommands));
     return new ApisAndCommandConfig(apis, commands);
   }
 
